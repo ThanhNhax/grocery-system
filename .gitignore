@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Build outputs
+dist/
+build/
+coverage/
+
+# Runtime caches
+.cache/
+.parcel-cache/
+.turbo/
+
+# Framework outputs
+.next/
+.nuxt/
+out/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Misc
+*.pid
+*.seed
+*.tgz
