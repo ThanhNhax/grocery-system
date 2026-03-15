@@ -10,6 +10,14 @@ class Product {
             data: products,
         });
     };
+    getById = async (req, res) => {
+        const id = Number(req.params.id);
+        const product = await productService.getById(id);
+        return sendSuccess(res, {
+            message: "Product fetched successfully",
+            data: product,
+        });
+    };
     create = async (req, res) => {
         const product = await productService.create(req.body);
         return sendSuccess(res, {
@@ -19,29 +27,24 @@ class Product {
         });
     };
 
-    udpate = (req, res) => {
-        const id = req.body.id;
-        const exits = this.findIndex(id);
-        if (exits === -1) {
-            throw Error("id not found!");
-        }
-        this.product[exits] = { ...req.body };
-        return res.status(201).json({ message: "Create successfully!" });
+    udpate = async (req, res) => {
+        const id = Number(req.params.id);
+        const product = await productService.update(id, req.body);
+
+        return sendSuccess(res, {
+            message: "Product updated successfully",
+            data: product,
+        });
     };
 
-    delete = (req, res) => {
-        const id = req.params.id;
-        console.log({ id });
-        const exits = this.findIndex(id);
-        if (exits === -1) {
-            throw Error("id not found!");
-        }
-        this.product = this.product.filter((item) => item.id != id);
-        console.log(this.product);
-        return res.status(204).json({ message: "Delete successfully!" });
-    };
-    findIndex = (id) => {
-        return this.product.findIndex((item) => item.id == id);
+    delete = async (req, res) => {
+        const id = Number(req.params.id);
+
+        const product = await productService.remove(id);
+        return sendSuccess(res, {
+            message: "Product deleted successfully",
+            data: product,
+        });
     };
 }
 
