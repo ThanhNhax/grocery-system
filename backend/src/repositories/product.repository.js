@@ -37,12 +37,12 @@ const update = async (id, { name, price, stock }) => {
         `
       update products
       set
-        name = $2
-        price = $2
-        stock = $3
-        updated_at= now()
+        name = COALESCE($2, name),
+        price = COALESCE($3, price),
+        stock = COALESCE($4, stock),
+        updated_at = NOW()
       where id = $1
-      returning id, name, price, stokck, created_at, updated_at
+      returning id, name, price, stock, created_at, updated_at
     `,
         [id, name, price, stock],
     );
@@ -52,10 +52,10 @@ const update = async (id, { name, price, stock }) => {
 const remove = async (id) => {
     const result = await pool.query(
         `
-      delete form products
+      delete from products
       
       where id = $1
-      returning id, name, price, stokck, created_at, updated_at
+      returning id, name, price, stock, created_at, updated_at
     `,
         [id],
     );
