@@ -1,5 +1,7 @@
 import express from "express";
 import productRoutes from "./routes/product.route.js";
+import categoriesRoutes from "./routes/categories.route.js";
+
 import pool from "./db/pool.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
@@ -21,6 +23,7 @@ app.get("/health", async (req, res, next) => {
 });
 
 app.use("/products", productRoutes);
+app.use("/categories", categoriesRoutes);
 
 app.use(errorHandler);
 
