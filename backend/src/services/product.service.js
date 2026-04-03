@@ -1,26 +1,33 @@
 import productRepository from "../repositories/product.repository.js";
+import categoriesService from "../services/categories.service.js";
 import { AppError } from "../utils/appError.js";
 
 const getAll = async () => {
     return productRepository.findAll();
 };
-const create = async ({ name, price, stock }) => {
+const create = async ({ name, price, stock, category_id }) => {
     if (!name || typeof name !== "string") {
         throw new AppError("Name is required", 400);
     }
     if (price === undefined || Number(price) < 0) {
         throw new AppError("Price must be a non-negative number", 400);
     }
-    if (stock === undefined || Number(price) < 0) {
+    if (stock === undefined || Number(stock) < 0) {
         throw new AppError("Stock must be a non-negative number", 400);
     }
+    const existedCategoty = await categoriesService.getById(category_id);
+    if (!existedCategoty) {
+        throw new AppError("Category not found", 404);
+    }
+
     return productRepository.create({
         name: name.trim(),
         price: Number(price),
         stock: Number(stock),
+        category_id: Number(category_id),
     });
 };
-const update = async (id, { name, price, stock }) => {
+const update = async (id, { name, price, stock, category_id }) => {
     if (!Number.isInteger(id) && id <= 0) {
         throw new AppError("Invalid product id", 400);
     }
@@ -52,7 +59,12 @@ const update = async (id, { name, price, stock }) => {
         }
         nextPayload.stock = Number(stock);
     }
-
+    const existedCategory = await categoriesService.getById(category_id);
+    if (!existedCategory) {
+        throw new AppError("Category_id not found", 404);
+    }
+    nextPayload.category_id = Number(category_id);
+    
     return productRepository.update(id, nextPayload);
 };
 

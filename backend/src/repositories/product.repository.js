@@ -2,7 +2,7 @@ import pool from "../db/pool.js";
 
 const findAll = async () => {
     const result = await pool.query(`
-      select id, name, price, stock, created_at, updated_at
+      select *
       from products
       order by created_at desc
     `);
@@ -11,7 +11,7 @@ const findAll = async () => {
 const findById = async (id) => {
     const result = await pool.query(
         `
-      select id, name, price, stock, created_at, updated_at
+      select *
       from products
       where id = $1
     `,
@@ -20,19 +20,19 @@ const findById = async (id) => {
     return result.rows[0] || null;
 };
 
-const create = async ({ name, price, stock }) => {
+const create = async ({ name, price, stock, category_id  }) => {
     const result = await pool.query(
         `
-      insert into products (name, price, stock)
-      values($1,$2,$3)
-      returning id, name, price, stock, created_at, updated_at
+      insert into products (name, price, stock, category_id)
+      values($1,$2,$3,$4)
+      returning id, name, price, stock, created_at, updated_at, category_id
     `,
-        [name, price, stock],
+        [name, price, stock, category_id],
     );
     return result.rows[0];
 };
 
-const update = async (id, { name, price, stock }) => {
+const update = async (id, { name, price, stock, category_id }) => {
     const result = await pool.query(
         `
       update products
@@ -40,11 +40,12 @@ const update = async (id, { name, price, stock }) => {
         name = COALESCE($2, name),
         price = COALESCE($3, price),
         stock = COALESCE($4, stock),
+        category_id = COALESCE($5, category_id),
         updated_at = NOW()
       where id = $1
-      returning id, name, price, stock, created_at, updated_at
+      returning id, name, price, stock, created_at, updated_at, category_id
     `,
-        [id, name, price, stock],
+        [id, name, price, stock, category_id],
     );
     return result.rows[0] || null;
 };
@@ -55,7 +56,7 @@ const remove = async (id) => {
       delete from products
       
       where id = $1
-      returning id, name, price, stock, created_at, updated_at
+      returning id, name, price, stock, created_at, updated_at, category_id
     `,
         [id],
     );
