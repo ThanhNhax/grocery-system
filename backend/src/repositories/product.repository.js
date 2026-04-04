@@ -2,18 +2,20 @@ import pool from "../db/pool.js";
 
 const findAll = async () => {
     const result = await pool.query(`
-      select *
-      from products
-      order by created_at desc
+      select *, c.name as category_name
+      from products p
+      left join categories c on p.category_id = c.id
+      order by p.created_at desc
     `);
     return result.rows;
 };
 const findById = async (id) => {
     const result = await pool.query(
         `
-      select *
-      from products
-      where id = $1
+      select *, c.name as category_name
+      from products p
+      left join categories c on p.category_id = c.id
+      where p.id = $1
     `,
         [id],
     );

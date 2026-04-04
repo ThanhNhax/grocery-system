@@ -20,7 +20,7 @@ const findById = async (id) => {
     return result.rows[0] || null;
 };
 
-const create = async ({ name, price, stock }) => {
+const create = async ({ name }) => {
     const result = await pool.query(
         `
       insert into  categories (name)
