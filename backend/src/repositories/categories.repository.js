@@ -2,8 +2,8 @@ import pool from "../db/pool.js";
 
 const findAll = async () => {
     const result = await pool.query(`
-      select *
-      from products
+      select id, name, created_at, updated_at
+      from  categories
       order by created_at desc
     `);
     return result.rows;
@@ -11,8 +11,8 @@ const findAll = async () => {
 const findById = async (id) => {
     const result = await pool.query(
         `
-      select *
-      from products
+      select id, name, created_at, updated_at
+      from  categories
       where id = $1
     `,
         [id],
@@ -20,32 +20,29 @@ const findById = async (id) => {
     return result.rows[0] || null;
 };
 
-const create = async ({ name, price, stock, category_id  }) => {
+const create = async ({ name, price, stock }) => {
     const result = await pool.query(
         `
-      insert into products (name, price, stock, category_id)
-      values($1,$2,$3,$4)
-      returning id, name, price, stock, created_at, updated_at, category_id
+      insert into  categories (name)
+      values($1)
+      returning id, name, created_at, updated_at
     `,
-        [name, price, stock, category_id],
+        [name],
     );
     return result.rows[0];
 };
 
-const update = async (id, { name, price, stock, category_id }) => {
+const update = async (id, { name}) => {
     const result = await pool.query(
         `
-      update products
+      update  categories
       set
         name = COALESCE($2, name),
-        price = COALESCE($3, price),
-        stock = COALESCE($4, stock),
-        category_id = COALESCE($5, category_id),
         updated_at = NOW()
       where id = $1
-      returning id, name, price, stock, created_at, updated_at, category_id
+      returning id, name, created_at, updated_at
     `,
-        [id, name, price, stock, category_id],
+        [id, name],
     );
     return result.rows[0] || null;
 };
@@ -53,10 +50,10 @@ const update = async (id, { name, price, stock, category_id }) => {
 const remove = async (id) => {
     const result = await pool.query(
         `
-      delete from products
+      delete from  categories
       
       where id = $1
-      returning id, name, price, stock, created_at, updated_at, category_id
+      returning id, name, created_at, updated_at
     `,
         [id],
     );
