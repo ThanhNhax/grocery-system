@@ -12,6 +12,7 @@ class Product {
     };
     getById = async (req, res) => {
         const id = Number(req.params.id);
+        console.log({id});
         const product = await productService.getById(id);
         return sendSuccess(res, {
             message: "Product fetched successfully",

@@ -2,27 +2,44 @@ import pool from "../db/pool.js";
 
 const findAll = async () => {
     const result = await pool.query(`
-      select *, c.name as category_name
-      from products p
-      left join categories c on p.category_id = c.id
-      order by p.created_at desc
+        SELECT
+            p.id,
+            p.name,
+            p.price,
+            p.stock,
+            p.created_at,
+            p.updated_at,
+            p.category_id,
+            c.name AS category_name
+        FROM products p
+        LEFT JOIN categories c ON p.category_id = c.id
+        ORDER BY p.created_at DESC
     `);
+
     return result.rows;
 };
+
 const findById = async (id) => {
     const result = await pool.query(
         `
-      select *, c.name as category_name
-      from products p
-      left join categories c on p.category_id = c.id
-      where p.id = $1
-    `,
-        [id],
+        SELECT
+            p.id,
+            p.name,
+            p.stock,
+            p.created_at,
+            p.updated_at,
+            c.name AS category_name
+        FROM products p
+        LEFT JOIN categories c ON p.category_id = c.id
+        WHERE p.id = $1
+        `,
+        [id]
     );
+
     return result.rows[0] || null;
 };
 
-const create = async ({ name, price, stock, category_id  }) => {
+const create = async ({ name, price, stock, category_id }) => {
     const result = await pool.query(
         `
       insert into products (name, price, stock, category_id)
